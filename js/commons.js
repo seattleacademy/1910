@@ -98,6 +98,10 @@ function renderNavBar(navbarId, exampleUri) {
 }
 
 function renderSelectList(selectListId, onChange, initialValue, renderChildren) {
+  // console.log(selectListId,$(selectListId).html);
+  // console.log($(selectListId).html);
+
+  $(selectListId).html("");
   const select = document.createElement('select')
   $(selectListId).get(0).appendChild(select)
   renderChildren(select)

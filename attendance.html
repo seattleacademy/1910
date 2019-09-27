@@ -217,9 +217,10 @@
         $('#facesContainer').empty()
         counter = 0;
         faceImages.forEach(canvas => {
+            $('#facesContainer').append(canvas);
             str = '<div>';
             str += '<form method="post" accept-charset="utf-8" name="form1" action="addface.php">';
-            str += '<textarea name="hidden_data">';
+            str += '<textarea style="display:none" name="hidden_data">';
             str += canvas.toDataURL("image/jpeg",0.7);
             str += '</textarea>';
             str += '<textarea name="person">';
@@ -229,8 +230,7 @@
             str += '</form>';
             str += '</div>';
             $('#facesContainer').append(str);
-            $('#facesContainer').append(canvas);
-            $('#facesContainer').append(canvas.label)
+           // $('#facesContainer').append(canvas.label)
             counter++;
         })
     }
@@ -239,7 +239,11 @@
         // load face detection model
         let response = await fetch('faces.php');
         faces = await response.json();
-        console.log(faces);
+
+        response = await fetch('images.php');
+        images = await response.json();
+        initImageSelectionControls(images[0]);
+       // console.log(images);
         console.timeLog('everything')
         await changeFaceDetector(selectedFaceDetector)
         console.timeLog('everything')
@@ -261,7 +265,7 @@
         const imgFile = $('#queryImgUploadInput').get(0).files[0]
         const img = await faceapi.bufferToImage(imgFile)
         $('#inputImg').get(0).src = img.src
-        updateResults(faceMatcher)
+        updateResults()
     }
 
     function uploadCanvas(canvas) {

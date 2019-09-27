@@ -14,7 +14,8 @@ while(file_exists($upload_dir . $person . "." . $counter . "."  . $imageFileType
 
 $file = $upload_dir . $person . "." . $counter . "."  . $imageFileType;
 $success = file_put_contents($file, $data);
-//print $success ? $file : 'Unable to save the file.';
-header('Location: '.$_POST['return_url']);
+print $success ? $file : 'Unable to save the file.';
+  header( "refresh:1; url=faces/" ); 
+
 
 ?>
