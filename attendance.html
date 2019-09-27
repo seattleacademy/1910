@@ -223,9 +223,11 @@
             str += '<textarea style="display:none" name="hidden_data">';
             str += canvas.toDataURL("image/jpeg",0.7);
             str += '</textarea>';
-            str += '<textarea name="person">';
+            //str += '<textarea name="person">';
+            str +=  '<input type="text" name="person" value="'
             str += canvas.label;
-            str += '</textarea>';
+            str += '">';
+            //str += '</textarea>';
             str += '<input type="submit" value="Submit">'
             str += '</form>';
             str += '</div>';
