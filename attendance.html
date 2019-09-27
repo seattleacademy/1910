@@ -163,7 +163,7 @@
         if (!isFaceDetectionModelLoaded()) {
             return
         }
-                console.timeLog('everything')
+        console.timeLog('everything')
 
         // faceMatcher = await createFaceMatcher();
         if (!faceMatcher) {
@@ -180,11 +180,11 @@
         console.timeLog('everything')
 
         const detections = await faceapi.detectAllFaces(inputImgEl, options)
-                console.timeLog('everything')
+        console.timeLog('everything')
 
         const faceImages = await faceapi.extractFaces(inputImgEl, detections)
 
-                console.timeLog('everything')
+        console.timeLog('everything')
 
         const results = await faceapi
             .detectAllFaces(inputImgEl, options)
@@ -192,18 +192,19 @@
             .withFaceDescriptors()
 
         counter = 0;
-                console.timeLog('everything')
+        console.timeLog('everything')
 
         results.forEach(({ detection, descriptor }) => {
-            const label = faceMatcher.findBestMatch(descriptor).toString()
+            console.info(faceMatcher.findBestMatch(descriptor));
+            const label = faceMatcher.findBestMatch(descriptor).label;
             const options = { label }
             faceImages[counter].label = label;
             counter++
         })
-                console.timeLog('everything')
+        console.timeLog('everything')
 
         displayExtractedFaces(faceImages, results)
-                console.timeLog('everything')
+        console.timeLog('everything')
 
     }
 
@@ -216,6 +217,18 @@
         $('#facesContainer').empty()
         counter = 0;
         faceImages.forEach(canvas => {
+            str = '<div>';
+            str += '<form method="post" accept-charset="utf-8" name="form1" action="addface.php">';
+            str += '<textarea name="hidden_data">';
+            str += canvas.toDataURL("image/jpeg",0.7);
+            str += '</textarea>';
+            str += '<textarea name="person">';
+            str += canvas.label;
+            str += '</textarea>';
+            str += '<input type="submit" value="Submit">'
+            str += '</form>';
+            str += '</div>';
+            $('#facesContainer').append(str);
             $('#facesContainer').append(canvas);
             $('#facesContainer').append(canvas.label)
             counter++;
