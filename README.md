@@ -1,2 +1,2 @@
-# 1910
-Attendance with face recognition
+# 1909
+Face recognition attendance app
