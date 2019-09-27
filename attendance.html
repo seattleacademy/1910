@@ -1,8 +1,12 @@
-
 <!DOCTYPE html>
 <html>
 
 <head>
+    <script>
+    if (location.protocol !== "https:") {
+        location.protocol = "https:";
+    }
+    </script>
     <meta charset="utf-8">
     <script src="face-api.js"></script>
     <script src="js/commons.js"></script>
@@ -20,8 +24,10 @@
         <div class="progress" id="loader">
             <div class="indeterminate"></div>
         </div>
+        <div>
+            <button onclick="captureButton();">Web Capture</button>
+        </div>
         <div style="position: relative" class="margin">
-            <button onclick="captureButton();">Capture</button>
             <img id="inputImg" src="" style="max-width: 800px;" />
             <canvas id="overlay" />
             <video style="display:none" id="hiddenVideo"></video>
@@ -220,10 +226,10 @@
             str = '<div>';
             str += '<form method="post" accept-charset="utf-8" name="form1" action="addface.php">';
             str += '<textarea style="display:none" name="hidden_data">';
-            str += canvas.toDataURL("image/jpeg",0.7);
+            str += canvas.toDataURL("image/jpeg", 0.7);
             str += '</textarea>';
             //str += '<textarea name="person">';
-            str +=  '<input type="text" name="person" value="'
+            str += '<input type="text" name="person" value="'
             str += canvas.label;
             str += '">';
             //str += '</textarea>';
@@ -231,7 +237,7 @@
             str += '</form>';
             str += '</div>';
             $('#facesContainer').append(str);
-           // $('#facesContainer').append(canvas.label)
+            // $('#facesContainer').append(canvas.label)
             counter++;
         })
     }
@@ -244,7 +250,7 @@
         response = await fetch('images.php');
         images = await response.json();
         initImageSelectionControls(images[0]);
-       // console.log(images);
+        // console.log(images);
         console.timeLog('everything')
         await changeFaceDetector(selectedFaceDetector)
         console.timeLog('everything')
@@ -263,7 +269,7 @@
     }
 
     // Waits for it to load
-    document.addEventListener('DOMContentLoaded', function(){
+    document.addEventListener('DOMContentLoaded', function() {
 
         // After loaded, initialize varoiables
         var hiddenVideo = document.getElementById("hiddenVideo");
@@ -272,10 +278,10 @@
 
         // Check for getUserMedia support
         navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.msGetUserMedia || navigator.oGetUserMedia;
-         
+
 
         // Get access to the camera!
-        if(navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+        if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
             // Not adding `{ audio: true }` since we only want feed now
             navigator.mediaDevices.getUserMedia({ video: true }).then(function(stream) {
                 // feed.src = window.URL.createObjectURL(stream);
@@ -286,11 +292,11 @@
             });
         }
 
-    },false);
+    }, false);
 
 
     // Capture button
-    function captureButton(){
+    function captureButton() {
         // Draws the image
         draw2Canvas(document.getElementById("hiddenVideo"));
     }
@@ -302,13 +308,13 @@
         canvas.style = "display: none";
         // Creates a canvas
         document.body.appendChild(canvas);
-        
+
         // Sets the width and height
         canvas.width = video.videoWidth;
         canvas.height = video.videoHeight;
 
         // Draws the image on the canvas
-        canvas.getContext("2d").drawImage(video, 0,0,canvas.width, canvas.height);
+        canvas.getContext("2d").drawImage(video, 0, 0, canvas.width, canvas.height);
 
         // Gets the data URL
         var dataURL = canvas.toDataURL();
