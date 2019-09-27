@@ -1,7 +1,9 @@
+
 <!DOCTYPE html>
 <html>
 
 <head>
+    <meta charset="utf-8">
     <script src="face-api.js"></script>
     <script src="js/commons.js"></script>
     <script src="js/faceDetectionControls.js"></script>
@@ -19,8 +21,10 @@
             <div class="indeterminate"></div>
         </div>
         <div style="position: relative" class="margin">
+            <button onclick="captureButton();">Capture</button>
             <img id="inputImg" src="" style="max-width: 800px;" />
             <canvas id="overlay" />
+            <video style="display:none" id="hiddenVideo"></video>
         </div>
         <!-- image_selection_control -->
         <div class="row">
@@ -148,12 +152,8 @@
         }
         console.timeLog('everything')
 
-        console.log(labeledFaceDescriptors);
-
         const maxDescriptorDistance = 0.6
         faceMatcher = new faceapi.FaceMatcher(labeledFaceDescriptors, maxDescriptorDistance)
-
-        console.info(faceMatcher);
 
 
         return faceMatcher;
@@ -195,7 +195,6 @@
         console.timeLog('everything')
 
         results.forEach(({ detection, descriptor }) => {
-            console.info(faceMatcher.findBestMatch(descriptor));
             const label = faceMatcher.findBestMatch(descriptor).label;
             const options = { label }
             faceImages[counter].label = label;
@@ -261,6 +260,66 @@
         // initialize face matcher with 1 reference descriptor per bbt character
         // start processing image
         updateResults()
+    }
+
+    // Waits for it to load
+    document.addEventListener('DOMContentLoaded', function(){
+
+        // After loaded, initialize varoiables
+        var hiddenVideo = document.getElementById("hiddenVideo");
+        var canvas = document.getElementById("overlay");
+        var ctx = canvas.getContext("2d");
+
+        // Check for getUserMedia support
+        navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.msGetUserMedia || navigator.oGetUserMedia;
+         
+
+        // Get access to the camera!
+        if(navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+            // Not adding `{ audio: true }` since we only want feed now
+            navigator.mediaDevices.getUserMedia({ video: true }).then(function(stream) {
+                // feed.src = window.URL.createObjectURL(stream);
+                hiddenVideo.srcObject = stream;
+
+                // Starts the hiddenVideo (probably unnecessary)
+                hiddenVideo.play();
+            });
+        }
+
+    },false);
+
+
+    // Capture button
+    function captureButton(){
+        // Draws the image
+        draw2Canvas(document.getElementById("hiddenVideo"));
+    }
+
+
+    // Draws the video to the canvas
+    function draw2Canvas(video, image) {
+        var canvas = document.createElement("canvas");
+        canvas.style = "display: none";
+        // Creates a canvas
+        document.body.appendChild(canvas);
+        
+        // Sets the width and height
+        canvas.width = video.videoWidth;
+        canvas.height = video.videoHeight;
+
+        // Draws the image on the canvas
+        canvas.getContext("2d").drawImage(video, 0,0,canvas.width, canvas.height);
+
+        // Gets the data URL
+        var dataURL = canvas.toDataURL();
+        // Sets the image to the canvas's data URL
+        inputImg.src = dataURL;
+
+        // Runs the API
+        updateResults();
+
+        // Removes the temporary canvas
+        document.body.removeChild(canvas);
     }
 
     async function uploadQueryImage(e) {
